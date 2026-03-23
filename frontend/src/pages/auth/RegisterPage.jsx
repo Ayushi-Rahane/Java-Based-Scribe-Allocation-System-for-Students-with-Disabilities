@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { BookOpen, Plus, X, ChevronRight, ChevronLeft, Check } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Spinner } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Spinner } from "../../components/UI";
 
 const SUBJECTS  = ["Mathematics","Physics","Chemistry","Biology","English","History","Computer Science","Economics","Geography"];
 const LANGUAGES = ["English","Hindi","Marathi","Tamil","Telugu","Bengali","Gujarati","Kannada"];

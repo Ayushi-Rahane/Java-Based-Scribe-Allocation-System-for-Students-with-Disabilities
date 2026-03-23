@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Search, InboxIcon, Calendar, Clock, FileText, CheckCircle2, XCircle, ChevronDown } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, MatchScore, DisabilityBadge, EmptyState, Spinner, Toast } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, MatchScore, DisabilityBadge, EmptyState, Spinner, Toast } from "../../components/UI";
 
 function RequestCard({ req, onAccept, onDecline }) {
   const [expanded, setExpanded] = useState(false);

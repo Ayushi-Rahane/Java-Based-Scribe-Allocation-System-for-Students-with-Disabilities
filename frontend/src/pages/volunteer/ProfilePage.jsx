@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Edit3, Save, X, Plus, Check, Camera, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, Spinner, Toast } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, Spinner, Toast } from "../../components/UI";
 
 const SUBJECTS  = ["Mathematics","Physics","Chemistry","Biology","English","History","Computer Science","Economics","Geography"];
 const LANGUAGES = ["English","Hindi","Marathi","Tamil","Telugu","Bengali","Gujarati","Kannada"];

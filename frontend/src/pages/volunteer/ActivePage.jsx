@@ -1,8 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import { ClipboardCheck, Calendar, Clock, Download, Zap } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, DisabilityBadge, EmptyState } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, DisabilityBadge, EmptyState } from "../../components/UI";
 
 function ActiveCard({ req }) {
   const daysUntil = Math.ceil((new Date(req.examDate) - new Date()) / (1000*60*60*24));

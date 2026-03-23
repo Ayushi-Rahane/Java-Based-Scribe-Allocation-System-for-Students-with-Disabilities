@@ -1,7 +1,7 @@
 import React from "react";
 import { Download } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, Stars } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, Stars } from "../../components/UI";
 
 const CERTS = [
   { id:"c1", title:"Dedicated Volunteer", subtitle:"Completed 10+ sessions", date:"Oct 2025", icon:"🏅", color:"#f39c12", bg:"#fff8e8" },

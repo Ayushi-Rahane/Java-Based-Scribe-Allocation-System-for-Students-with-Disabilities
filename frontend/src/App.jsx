@@ -5,15 +5,15 @@ import { PageLoader } from "./components/UI";
 import Sidebar from "./components/Sidebar";
 
 // Pages
-import LoginPage from "./pages/LoginPage";
-import RegisterPage from "./pages/RegisterPage";
-import DashboardPage from "./pages/DashboardPage";
-import RequestsPage from "./pages/RequestsPage";
-import ActivePage from "./pages/ActivePage";
-import HistoryPage from "./pages/HistoryPage";
-import RatingsPage from "./pages/RatingsPage";
-import ProfilePage from "./pages/ProfilePage";
-import NotificationsPage from "./pages/NotificationsPage";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
+import DashboardPage from "./pages/volunteer/DashboardPage";
+import RequestsPage from "./pages/volunteer/RequestsPage";
+import ActivePage from "./pages/volunteer/ActivePage";
+import HistoryPage from "./pages/volunteer/HistoryPage";
+import RatingsPage from "./pages/volunteer/RatingsPage";
+import ProfilePage from "./pages/volunteer/ProfilePage";
+import NotificationsPage from "./pages/volunteer/NotificationsPage";
 
 // Protected layout wrapper
 function AppLayout({ children }) {

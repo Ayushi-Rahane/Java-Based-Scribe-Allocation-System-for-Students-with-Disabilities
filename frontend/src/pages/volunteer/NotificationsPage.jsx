@@ -1,7 +1,7 @@
 import React from "react";
 import { Bell, InboxIcon, Star, Award, Clock } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { EmptyState } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { EmptyState } from "../../components/UI";
 
 const typeConfig = {
   request:  { icon: InboxIcon, bg:"#f0eeff", color:"#7c4dff" },

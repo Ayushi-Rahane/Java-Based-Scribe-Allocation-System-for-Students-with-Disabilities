@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Search, History } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, Stars, EmptyState } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, Stars, EmptyState } from "../../components/UI";
 
 export default function HistoryPage() {
   const { history } = useAuth();

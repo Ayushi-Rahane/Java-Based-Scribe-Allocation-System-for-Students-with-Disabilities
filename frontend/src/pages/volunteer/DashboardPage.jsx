@@ -4,8 +4,8 @@ import {
   InboxIcon, ClipboardCheck, Award, TrendingUp,
   ArrowRight, Search, Bell, Calendar, Clock, Zap,
 } from "lucide-react";
-import { useAuth } from "../context/AuthContext";
-import { Avatar, Stars, DisabilityBadge, MatchScore } from "../components/UI";
+import { useAuth } from "../../context/AuthContext";
+import { Avatar, Stars, DisabilityBadge, MatchScore } from "../../components/UI";
 
 const C = {
   primary:      "#4F46E5",
