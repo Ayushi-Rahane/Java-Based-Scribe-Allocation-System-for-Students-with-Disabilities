@@ -7,6 +7,13 @@ import Sidebar from "./components/Sidebar";
 // Pages
 import LoginPage from "./pages/auth/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage";
+import StudentRegisterPage from "./pages/auth/StudentRegisterPage";
+import StudentDashboard from "./pages/student/StudentDashboard";
+import RequestScribe from "./pages/student/RequestScribe";
+import ActiveRequests from "./pages/student/ActiveRequests";
+import Availability from "./pages/student/Availability";
+import History from "./pages/student/History";
+import Profile from "./pages/student/Profile";
 import DashboardPage from "./pages/volunteer/DashboardPage";
 import RequestsPage from "./pages/volunteer/RequestsPage";
 import ActivePage from "./pages/volunteer/ActivePage";
@@ -43,16 +50,81 @@ function PublicOnly({ children }) {
   return children;
 }
 
+// Redirects based on role
+function DashboardRedirect() {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" replace />;
+  if (user.role === "student") return <Navigate to="/student/dashboard" replace />;
+  return <Navigate to="/volunteer/dashboard" replace />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
       {/* Public */}
       <Route path="/login" element={<PublicOnly><LoginPage /></PublicOnly>} />
-      <Route path="/register" element={<PublicOnly><RegisterPage /></PublicOnly>} />
+      <Route path="/register" element={<PublicOnly><StudentRegisterPage /></PublicOnly>} />
+      <Route path="/register/volunteer" element={<PublicOnly><RegisterPage /></PublicOnly>} />
 
       {/* Protected */}
       <Route
         path="/dashboard"
+        element={
+          <Protected>
+            <DashboardRedirect />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/dashboard"
+        element={
+          <Protected>
+            <StudentDashboard />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/request"
+        element={
+          <Protected>
+            <RequestScribe />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/active"
+        element={
+          <Protected>
+            <ActiveRequests />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/availability"
+        element={
+          <Protected>
+            <Availability />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/history"
+        element={
+          <Protected>
+            <History />
+          </Protected>
+        }
+      />
+      <Route
+        path="/student/profile"
+        element={
+          <Protected>
+            <Profile />
+          </Protected>
+        }
+      />
+      <Route
+        path="/volunteer/dashboard"
         element={
           <Protected>
             <AppLayout><DashboardPage /></AppLayout>
@@ -107,8 +179,6 @@ function AppRoutes() {
           </Protected>
         }
       />
-
-      {/* Fallback */}
       <Route path="/" element={<Navigate to="/dashboard" replace />} />
       <Route path="*" element={<Navigate to="/dashboard" replace />} />
     </Routes>

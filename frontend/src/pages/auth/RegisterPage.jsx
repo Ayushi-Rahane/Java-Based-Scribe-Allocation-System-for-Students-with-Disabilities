@@ -55,7 +55,7 @@ export default function RegisterPage() {
 
   const handleSubmit = async () => {
     setLoading(true); setError("");
-    const res = await register(form);
+    const res = await register({ ...form, role: "volunteer" });
     setLoading(false);
     if (res.success) navigate("/dashboard");
     else setError(res.error || "Registration failed.");

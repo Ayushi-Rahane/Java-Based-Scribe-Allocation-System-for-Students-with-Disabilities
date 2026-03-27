@@ -35,6 +35,7 @@ const MOCK_VOLUNTEER = {
   joinedDate: "2024-08-01",
   verified: true,
   certificatesEarned: 3,
+  role: "volunteer",
 };
 
 const MOCK_INCOMING = [
@@ -171,20 +172,23 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     // Simulate checking local session
-    const saved = localStorage.getItem("sc_volunteer");
+    const saved = localStorage.getItem("sc_user");
     if (saved) {
       setUser(JSON.parse(saved));
     }
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email, password, role = "volunteer") => {
     // Mock login — replace with: POST /api/auth/login
     await new Promise((r) => setTimeout(r, 800));
     if (email && password) {
-      const volunteer = { ...MOCK_VOLUNTEER, email };
-      setUser(volunteer);
-      localStorage.setItem("sc_volunteer", JSON.stringify(volunteer));
+      const userObj = role === "student" 
+        ? { id: "std_" + Date.now(), fullName: "Student User", email, role: "student" }
+        : { ...MOCK_VOLUNTEER, email, role: "volunteer" };
+      
+      setUser(userObj);
+      localStorage.setItem("sc_user", JSON.stringify(userObj));
       return { success: true };
     }
     return { success: false, error: "Invalid credentials" };
@@ -193,15 +197,19 @@ export const AuthProvider = ({ children }) => {
   const register = async (data) => {
     // Mock register — replace with: POST /api/volunteer/register
     await new Promise((r) => setTimeout(r, 1000));
-    const volunteer = { ...MOCK_VOLUNTEER, ...data, id: "vol_" + Date.now() };
-    setUser(volunteer);
-    localStorage.setItem("sc_volunteer", JSON.stringify(volunteer));
+    const role = data.role || "volunteer";
+    const userObj = role === "volunteer" 
+      ? { ...MOCK_VOLUNTEER, ...data, id: "vol_" + Date.now(), role: "volunteer" }
+      : { id: "std_" + Date.now(), ...data, role: "student" };
+    
+    setUser(userObj);
+    localStorage.setItem("sc_user", JSON.stringify(userObj));
     return { success: true };
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem("sc_volunteer");
+    localStorage.removeItem("sc_user");
   };
 
   const updateProfile = async (data) => {
