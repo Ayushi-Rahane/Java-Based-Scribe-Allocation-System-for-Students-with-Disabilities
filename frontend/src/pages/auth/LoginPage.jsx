@@ -185,7 +185,9 @@ const styles = {
   input: {
     width: "100%",
     background: "#F5F3FF",
-    border: "1.5px solid #DDD6FE",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#DDD6FE",
     borderRadius: 12,
     padding: "12px 44px 12px 42px",
     color: "#1E1B4B",

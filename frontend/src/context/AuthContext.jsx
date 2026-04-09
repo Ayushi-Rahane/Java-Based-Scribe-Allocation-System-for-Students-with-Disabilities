@@ -180,31 +180,47 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (email, password, role = "volunteer") => {
-    // Mock login — replace with: POST /api/auth/login
-    await new Promise((r) => setTimeout(r, 800));
-    if (email && password) {
-      const userObj = role === "student" 
-        ? { id: "std_" + Date.now(), fullName: "Student User", email, role: "student" }
-        : { ...MOCK_VOLUNTEER, email, role: "volunteer" };
-      
-      setUser(userObj);
-      localStorage.setItem("sc_user", JSON.stringify(userObj));
-      return { success: true };
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, role }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setUser(data.user);
+        localStorage.setItem("sc_user", JSON.stringify(data.user));
+        return { success: true };
+      } else {
+        return { success: false, error: data.error || "Login failed" };
+      }
+    } catch (err) {
+      return { success: false, error: "Server connection error" };
     }
-    return { success: false, error: "Invalid credentials" };
   };
 
   const register = async (data) => {
-    // Mock register — replace with: POST /api/volunteer/register
-    await new Promise((r) => setTimeout(r, 1000));
-    const role = data.role || "volunteer";
-    const userObj = role === "volunteer" 
-      ? { ...MOCK_VOLUNTEER, ...data, id: "vol_" + Date.now(), role: "volunteer" }
-      : { id: "std_" + Date.now(), ...data, role: "student" };
-    
-    setUser(userObj);
-    localStorage.setItem("sc_user", JSON.stringify(userObj));
-    return { success: true };
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      const resData = await response.json();
+
+      if (resData.success) {
+        setUser(resData.user);
+        localStorage.setItem("sc_user", JSON.stringify(resData.user));
+        return { success: true };
+      } else {
+        return { success: false, error: resData.error || "Registration failed" };
+      }
+    } catch (err) {
+      return { success: false, error: "Server connection error" };
+    }
   };
 
   const logout = () => {

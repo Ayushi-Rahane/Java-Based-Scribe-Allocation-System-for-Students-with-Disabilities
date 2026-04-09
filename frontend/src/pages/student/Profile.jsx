@@ -38,49 +38,34 @@ const Profile = () => {
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
     const navigate = useNavigate();
 
-    // Fetch profile data on component mount
+    // Hydrate form with user profile on mount
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                setLoading(true);
-                const profileData = await studentService.getProfile();
-
-                setProfile(profileData);
-                // Initialize form data with profile data
-                setFormData({
-                    fullName: profileData?.fullName || '',
-                    phone: profileData?.phone || '',
-                    dateOfBirth: profileData?.dateOfBirth || '',
-                    university: profileData?.university || '',
-                    course: profileData?.course || '',
-                    disabilityType: profileData?.disabilityType || '',
-                    certificateNumber: profileData?.certificateNumber || '',
-                    specificNeeds: profileData?.specificNeeds || '',
-                    currentYear: profileData?.currentYear || '',
-                    examFrequency: profileData?.examFrequency || '',
-                    preferredSubjects: profileData?.preferredSubjects || [],
-                    academicNotes: profileData?.academicNotes || '',
-                    preferredLanguage: profileData?.preferredLanguage || '',
-                    notificationMethod: profileData?.notificationMethod || '',
-                    preferredTime: profileData?.preferredTime || '',
-                    city: profileData?.city || '',
-                    state: profileData?.state || ''
-                });
-                setLoading(false);
-            } catch (err) {
-                console.error("Error fetching profile:", err);
-                setError(err.message);
-                setLoading(false);
-
-                // If unauthorized, redirect to login
-                if (err.message.toLocaleLowerCase().includes("token") || err.message.toLocaleLowerCase().includes("authorized")) {
-                    navigate("/login");
-                }
-            }
-        };
-
-        fetchProfile();
-    }, [navigate]);
+        if (currentUser) {
+            setProfile(currentUser);
+            setFormData({
+                fullName: currentUser.fullName || '',
+                phone: currentUser.phone || '',
+                dateOfBirth: currentUser.dateOfBirth || '',
+                university: currentUser.university || '',
+                course: currentUser.course || '',
+                disabilityType: currentUser.disabilityType || '',
+                certificateNumber: currentUser.certificateNumber || '',
+                specificNeeds: currentUser.specificNeeds || '',
+                currentYear: currentUser.currentYear || '',
+                examFrequency: currentUser.examFrequency || '',
+                preferredSubjects: currentUser.preferredSubjects || [],
+                academicNotes: currentUser.academicNotes || '',
+                preferredLanguage: currentUser.preferredLanguage || '',
+                notificationMethod: currentUser.notificationMethod || '',
+                preferredTime: currentUser.preferredTime || '',
+                city: currentUser.city || '',
+                state: currentUser.state || ''
+            });
+            setLoading(false);
+        } else {
+            navigate("/login");
+        }
+    }, [currentUser, navigate]);
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({

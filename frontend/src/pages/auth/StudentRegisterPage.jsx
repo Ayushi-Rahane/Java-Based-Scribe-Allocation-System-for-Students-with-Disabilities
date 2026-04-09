@@ -171,7 +171,9 @@ const S = {
   inputField: {
     width: "100%",
     background: "#F5F3FF",
-    border: "1.5px solid #DDD6FE",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#DDD6FE",
     borderRadius: 12,
     padding: "12px 16px",
     color: "#1E1B4B",
@@ -184,7 +186,9 @@ const S = {
   selectField: {
     width: "100%",
     background: "#F5F3FF",
-    border: "1.5px solid #DDD6FE",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#DDD6FE",
     borderRadius: 12,
     padding: "12px 16px",
     color: "#1E1B4B",
@@ -199,7 +203,9 @@ const S = {
   textareaField: {
     width: "100%",
     background: "#F5F3FF",
-    border: "1.5px solid #DDD6FE",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#DDD6FE",
     borderRadius: 12,
     padding: "12px 16px",
     color: "#1E1B4B",

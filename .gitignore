@@ -9,29 +9,36 @@ lerna-debug.log*
 
 # Node / Frontend
 node_modules/
+/frontend/node_modules/
 dist/
+/frontend/dist/
 dist-ssr/
 *.local
 .env
 .env.*
+.eslintcache
 
 # Editor folders and files
-.vscode
-.idea
+.vscode/
+.idea/
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 .DS_Store
+Thumbs.db
 
 # Spring Boot / Maven / Backend
 target/
+/backend/target/
 !.mvn/wrapper/maven-wrapper.jar
 build/
+/backend/build/
 .gradle/
 out/
 bin/
+.m2/
 
 # Compiled files
 *.class
@@ -55,3 +62,7 @@ bin/
 # Temp
 tmp/
 temp/
+
+# Secrets / Configuration (Avoid committing sensitive data)
+# application-local.properties
+# .env

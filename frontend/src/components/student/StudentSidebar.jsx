@@ -27,7 +27,7 @@ const menuItems = [
 const StudentSidebar = () => {
     const location = useLocation();
     const navigate = useNavigate();
-    const { logout } = useAuth();
+    const { logout, user } = useAuth();
     const currentPath = location.pathname;
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [studentName, setStudentName] = useState("Loading...");
@@ -44,24 +44,16 @@ const StudentSidebar = () => {
     };
 
     useEffect(() => {
-        const fetchProfile = async () => {
-            try {
-                const profile = await studentService.getProfile();
-                if (profile && profile.fullName) {
-                    setStudentName(profile.fullName);
-                    const parts = profile.fullName.split(" ");
-                    const initials = parts.length >= 2
-                        ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-                        : profile.fullName.substring(0, 2).toUpperCase();
-                    setStudentInitials(initials);
-                    setProfilePicture(profile.profilePicture);
-                }
-            } catch (err) {
-                console.error("Error fetching profile:", err);
-            }
-        };
-        fetchProfile();
-    }, []);
+        if (user && user.fullName) {
+            setStudentName(user.fullName);
+            const parts = user.fullName.split(" ");
+            const initials = parts.length >= 2
+                ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                : user.fullName.substring(0, 2).toUpperCase();
+            setStudentInitials(initials);
+            setProfilePicture(user.profilePicture);
+        }
+    }, [user]);
 
     const handleLogout = () => {
         logout();

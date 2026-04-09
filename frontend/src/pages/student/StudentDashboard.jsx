@@ -21,30 +21,13 @@ import { useAuth } from "../../context/AuthContext";
 const StudentDashboard = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
-    const [profile, setProfile] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        fetchProfile();
-    }, []);
-
-    const fetchProfile = async () => {
-        try {
-            setLoading(true);
-            const data = await studentService.getProfile();
-            setProfile(data);
-        } catch (err) {
-            console.error("Error fetching profile:", err);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const [loading, setLoading] = useState(false);
 
     const handleNewRequest = () => {
         navigate('/student/request');
     };
 
-    const firstName = profile?.fullName?.split(' ')[0] || user?.fullName?.split(' ')[0] || 'Student';
+    const firstName = user?.fullName?.split(' ')[0] || 'Student';
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] flex font-['Poppins',_sans-serif]">

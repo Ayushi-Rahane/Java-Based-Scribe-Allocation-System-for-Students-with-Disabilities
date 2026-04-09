@@ -24,7 +24,7 @@ export default function NotificationsPage() {
         style={{
           width:"100%", textAlign:"left",
           display:"flex", alignItems:"flex-start", gap:14,
-          padding:"14px 16px", borderRadius:14, border:"none", cursor:"pointer",
+          padding:"14px 16px", borderRadius:14, cursor:"pointer",
           background: n.read ? "#fafafa" : "white",
           boxShadow: n.read ? "none" : "0 2px 10px rgba(124,77,255,0.07)",
           border: n.read ? "1px solid #f0f0f0" : "1px solid #ede9ff",
