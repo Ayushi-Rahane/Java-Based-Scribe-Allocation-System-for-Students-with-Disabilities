@@ -71,6 +71,29 @@ const requestService = {
     }
   },
 
+  uploadMaterials: async (files) => {
+    if (!files || files.length === 0) return [];
+    
+    const formData = new FormData();
+    for (let i = 0; i < files.length; i++) {
+        formData.append("files", files[i]);
+    }
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/files/upload`, {
+            method: 'POST',
+            body: formData
+            // Note: Let the browser set the Content-Type to multipart/form-data with the boundary
+        });
+        
+        if (!response.ok) throw new Error('Failed to upload files');
+        return await response.json(); // returns array of filenames
+    } catch (err) {
+        console.error("Error uploading materials:", err);
+        throw err;
+    }
+  },
+
   cancelRequest: async (requestId) => {
     try {
         const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {

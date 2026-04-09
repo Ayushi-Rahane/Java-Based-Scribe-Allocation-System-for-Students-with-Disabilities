@@ -144,6 +144,26 @@ const ActiveRequest = () => {
                     </div>
                 )}
 
+                {/* Attached Materials */}
+                {activeRequest.materials && activeRequest.materials.length > 0 && (
+                    <div className="mb-6">
+                        <p className="text-[10px] uppercase font-bold text-slate-400 tracking-widest mb-2">Study Materials</p>
+                        <div className="flex flex-wrap gap-2">
+                            {activeRequest.materials.map((filename, idx) => (
+                                <a 
+                                    key={idx} 
+                                    href={`http://localhost:8080/api/files/${filename}`} 
+                                    target="_blank" 
+                                    rel="noreferrer"
+                                    className="inline-flex items-center gap-1.5 px-3 py-2 bg-slate-50 hover:bg-indigo-50 border border-slate-200 hover:border-indigo-200 rounded-xl text-[12px] font-bold text-indigo-600 transition-colors truncate max-w-[200px]"
+                                >
+                                    📄 {filename}
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
                     {[
                         { icon: BookOpen, label: "Subject", val: activeRequest.subject },

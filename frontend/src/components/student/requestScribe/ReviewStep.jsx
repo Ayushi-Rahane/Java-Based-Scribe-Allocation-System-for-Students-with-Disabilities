@@ -105,6 +105,20 @@ const ReviewStep = ({ setStep, onSubmit, formData, loading }) => {
                                 {formData.requirements || "No requirements specified"}
                             </p>
                         </div>
+                        
+                        {/* Display Files */}
+                        {formData.materials && formData.materials.length > 0 && (
+                            <div className="mt-5 pt-5 border-t border-slate-100">
+                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider mb-2">Attached Materials</p>
+                                <div className="flex flex-wrap gap-2">
+                                    {Array.from(formData.materials).map((file, i) => (
+                                        <div key={i} className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 text-xs font-bold">
+                                            📄 {file.name}
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
 

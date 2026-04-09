@@ -126,7 +126,7 @@ const StudentSidebar = () => {
                     <div className="flex items-center gap-3 p-2 mb-3">
                         {profilePicture ? (
                             <img
-                                src={`${API_BASE_URL.replace('/api/v1', '')}${profilePicture}`}
+                                src={`${API_BASE_URL.split('/api')[0]}${profilePicture}`}
                                 alt="Profile"
                                 className="w-10 h-10 rounded-xl object-cover ring-2 ring-slate-800"
                             />

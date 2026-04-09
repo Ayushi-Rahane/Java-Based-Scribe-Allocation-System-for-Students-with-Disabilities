@@ -245,7 +245,7 @@ const VolunteerCard = ({ volunteer }) => {
             <div className="flex items-start gap-6 mb-8">
                 {volunteer.profilePicture ? (
                     <img
-                        src={`${API_BASE_URL.replace('/api/v1', '')}${volunteer.profilePicture}`}
+                        src={`${API_BASE_URL.split('/api')[0]}${volunteer.profilePicture}`}
                         alt={fullName}
                         className="w-20 h-20 rounded-[28px] object-cover border-4 border-slate-50 flex-shrink-0 group-hover:scale-105 transition-transform shadow-sm"
                     />

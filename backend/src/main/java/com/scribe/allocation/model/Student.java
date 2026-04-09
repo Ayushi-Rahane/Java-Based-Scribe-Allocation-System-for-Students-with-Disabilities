@@ -26,6 +26,7 @@ public class Student {
     private String course;
     private String city;
     private String state;
+    private String profilePicture;
     
     // Disability information
     private String disabilityType;

@@ -22,6 +22,7 @@ public class Request {
     private String language;
     private String location;
     private String requirements;
+    private java.util.List<String> materials; // Will store file URLs/Identifiers
     
     // Lifecycle Status
     // e.g. PENDING, MATCHED, COMPLETED, CANCELLED

@@ -1,5 +1,5 @@
 import React from "react";
-import { ArrowLeft, ArrowRight, MessageSquare, AlertCircle } from "lucide-react";
+import { ArrowLeft, ArrowRight, MessageSquare, AlertCircle, UploadCloud } from "lucide-react";
 
 const ScribeRequirements = ({ setStep, formData, updateFormData }) => {
     const handleNext = () => {
@@ -43,6 +43,42 @@ const ScribeRequirements = ({ setStep, formData, updateFormData }) => {
                                 Please provide detailed requirements to help us match you with the best volunteer. Mention any specific language needs, technical background, or accessibility accommodations.
                             </p>
                         </div>
+                    </div>
+
+                    {/* File Upload Section */}
+                    <div className="space-y-3 pt-6 border-t border-slate-100">
+                        <label className="text-[12px] font-black text-slate-400 uppercase tracking-[0.1em] px-1">
+                            Study Materials & Resources <span className="text-slate-300 font-medium normal-case tracking-normal">(Optional)</span>
+                        </label>
+                        <div className="relative group">
+                            <label className="flex flex-col items-center justify-center w-full h-36 border-2 border-slate-200 border-dashed rounded-[28px] cursor-pointer bg-slate-50 hover:bg-slate-100 hover:border-indigo-400 transition-all">
+                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                    <UploadCloud className="w-8 h-8 mb-3 text-indigo-500 group-hover:scale-110 transition-transform" />
+                                    <p className="mb-1 text-sm text-slate-500 font-medium"><span className="font-bold text-indigo-600">Click to upload</span> or drag and drop files here</p>
+                                    <p className="text-xs text-slate-400 font-medium mt-1">PDF, DOCX, PPT, Images (Up to 100MB per file)</p>
+                                </div>
+                                <input 
+                                    type="file" 
+                                    className="hidden" 
+                                    multiple 
+                                    onChange={(e) => updateFormData('materials', e.target.files)} 
+                                />
+                            </label>
+                        </div>
+                        
+                        {/* Display uploaded files temporarily */}
+                        {formData.materials && formData.materials.length > 0 && (
+                            <div className="mt-4 flex flex-wrap gap-2 animate-fadeIn">
+                                {Array.from(formData.materials).map((file, i) => (
+                                    <div key={i} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-indigo-100 shadow-sm text-indigo-900 text-[13px] font-bold">
+                                        <div className="w-6 h-6 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                            📄
+                                        </div>
+                                        <span className="truncate max-w-[200px]">{file.name}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

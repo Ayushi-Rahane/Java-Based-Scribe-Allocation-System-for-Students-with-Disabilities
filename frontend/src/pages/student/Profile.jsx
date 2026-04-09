@@ -210,7 +210,7 @@ const Profile = () => {
                                     <div className="relative">
                                         {photoPreview || profile?.profilePicture ? (
                                             <img
-                                                src={photoPreview || `${API_BASE_URL.replace('/api/v1', '')}${profile.profilePicture}`}
+                                                src={photoPreview || `${API_BASE_URL.split('/api')[0]}${profile.profilePicture}`}
                                                 alt="Profile"
                                                 className="w-32 h-32 rounded-[36px] object-cover border-[6px] border-white shadow-xl"
                                             />
