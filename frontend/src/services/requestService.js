@@ -1,78 +1,102 @@
-// Mock Request Service
+import API_BASE_URL from "../config/api";
+
+const getStudentId = () => {
+    const userStr = localStorage.getItem('sc_user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        return user._id || user.id;
+    }
+    return null;
+};
+
+// Helper to adapt Spring Boot MongoDB objects to what the React UI expects
+const adaptRequest = (r) => {
+    return {
+        ...r,
+        _id: r.id, // Fallback for UI components expecting _id
+        status: r.status ? r.status.toLowerCase() : 'pending',
+        volunteerId: r.volunteerId ? { fullName: "Assigned Volunteer" } : null 
+    };
+};
+
 const requestService = {
   getRequests: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    return [
-      {
-        _id: "req_001",
-        subject: "English Literature",
-        examName: "Semester Final",
-        examDate: "2025-11-12T10:00:00.000Z",
-        status: "matched",
-        duration: 3,
-        language: "English",
-        location: "Hall A, Mumbai University",
-        volunteerId: { fullName: "Aryan Mehta" },
-        materials: ["syllabus_lit.pdf"],
-        createdAt: "2025-11-05T09:00:00.000Z",
-      },
-      {
-        _id: "req_002",
-        subject: "History",
-        examName: "Mid-Term",
-        examDate: "2025-11-20T11:00:00.000Z",
-        status: "pending",
-        duration: 2,
-        language: "Hindi",
-        location: "Room 102, Arts Building",
-        materials: [],
-        createdAt: "2025-11-07T14:30:00.000Z",
-      },
-    ];
+    const studentId = getStudentId();
+    if (!studentId) return [];
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/student/${studentId}`);
+        if (!response.ok) throw new Error('Failed to fetch requests');
+        const data = await response.json();
+        return data
+            .map(adaptRequest)
+            .filter(r => ['pending', 'matched'].includes(r.status));
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
   },
 
   getHistory: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 400));
-    return [
-      {
-        _id: "hist_001",
-        subject: "Calculus",
-        examName: "Internal Exam",
-        examDate: "2025-10-10T10:00:00.000Z",
-        status: "completed",
-        rating: 5,
-        review: "Excellent scribe!",
-        createdAt: "2025-10-01T09:00:00.000Z",
-      },
-      {
-        _id: "hist_002",
-        subject: "Physics",
-        examName: "Final Viva",
-        examDate: "2025-09-28T09:00:00.000Z",
-        status: "completed",
-        rating: 4,
-        review: "Good experience.",
-        createdAt: "2025-09-15T10:00:00.000Z",
-      },
-    ];
+    const studentId = getStudentId();
+    if (!studentId) return [];
+    
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/student/${studentId}`);
+        if (!response.ok) throw new Error('Failed to fetch requests');
+        const data = await response.json();
+        return data
+            .map(adaptRequest)
+            .filter(r => ['completed', 'cancelled'].includes(r.status));
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
   },
 
   createRequest: async (formData) => {
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    console.log("Creating request:", formData);
-    return { success: true, id: "req_" + Date.now() };
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+        });
+        if (!response.ok) throw new Error('Failed to create request');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
   },
 
   cancelRequest: async (requestId) => {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    console.log(`Cancelling request: ${requestId}`);
-    return { success: true };
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/${requestId}`, {
+            method: 'DELETE'
+        });
+        if (!response.ok) throw new Error('Failed to cancel request');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
   },
 
   completeRequest: async (requestId, rating, feedback) => {
-    await new Promise((resolve) => setTimeout(resolve, 700));
-    console.log(`Completing request ${requestId} with rating ${rating} and feedback: ${feedback}`);
-    return { success: true };
+    try {
+        const response = await fetch(`${API_BASE_URL}/requests/${requestId}/status`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'COMPLETED', rating, review: feedback })
+        });
+        if (!response.ok) throw new Error('Failed to complete request');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        throw err;
+    }
   },
 };
 

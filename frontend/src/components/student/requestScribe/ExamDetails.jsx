@@ -15,7 +15,7 @@ const ExamDetails = ({ setStep, formData, updateFormData }) => {
 
     const handleNext = () => {
         // Validate before moving to next step
-        if (!formData.subject || !formData.examType || !formData.examDate || !formData.examTime || !selectedDuration) {
+        if (!formData.subject || !formData.examType || !formData.examDate || !formData.examTime || !formData.location || !formData.language || !selectedDuration) {
             alert("Please fill in all fields before continuing");
             return;
         }
@@ -101,6 +101,40 @@ const ExamDetails = ({ setStep, formData, updateFormData }) => {
                                 onChange={(e) => updateFormData('examTime', e.target.value)}
                                 className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all text-slate-700"
                             />
+                        </div>
+                    </div>
+
+                    {/* Location */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest px-1">Location</label>
+                        <div className="relative group">
+                            <BookOpen className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
+                            <input
+                                placeholder="e.g. Hall A, University Campus"
+                                value={formData.location || ""}
+                                onChange={(e) => updateFormData('location', e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all text-slate-700"
+                            />
+                        </div>
+                    </div>
+
+                    {/* Language */}
+                    <div className="space-y-2">
+                        <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest px-1">Language Note</label>
+                        <div className="relative group">
+                            <Layers className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-indigo-600 transition-colors" size={18} />
+                            <select
+                                value={formData.language || ""}
+                                onChange={(e) => updateFormData('language', e.target.value)}
+                                className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-12 pr-4 py-3.5 text-sm font-medium focus:outline-none focus:ring-4 focus:ring-indigo-600/5 focus:border-indigo-600 transition-all text-slate-700 appearance-none cursor-pointer"
+                            >
+                                <option value="">Select language</option>
+                                <option value="English">English</option>
+                                <option value="Hindi">Hindi</option>
+                                <option value="Marathi">Marathi</option>
+                                <option value="Tamil">Tamil</option>
+                                <option value="Telugu">Telugu</option>
+                            </select>
                         </div>
                     </div>
                 </div>

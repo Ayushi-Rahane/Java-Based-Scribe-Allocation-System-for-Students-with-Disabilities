@@ -13,8 +13,10 @@ import ExamDetails from "../../components/student/requestScribe/ExamDetails";
 import ScribeRequirements from "../../components/student/requestScribe/ScribeRequirements";
 import ReviewStep from "../../components/student/requestScribe/ReviewStep";
 import requestService from "../../services/requestService";
+import { useAuth } from "../../context/AuthContext";
 
 const RequestScribe = () => {
+    const { user } = useAuth();
     const [step, setStep] = useState(1);
     const [showSuccess, setShowSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -28,6 +30,8 @@ const RequestScribe = () => {
         examDate: "",
         examTime: "",
         duration: "",
+        location: "",
+        language: "",
         requirements: ""
     });
 
@@ -46,14 +50,19 @@ const RequestScribe = () => {
 
             // Validate required fields
             if (!formData.subject || !formData.examType || !formData.examDate ||
-                !formData.examTime || !formData.duration || !formData.requirements) {
+                !formData.examTime || !formData.duration || !formData.location || !formData.language || !formData.requirements) {
                 setError("Please fill in all required fields to proceed.");
                 setLoading(false);
                 return;
             }
 
-            // Submit to backend (Mocked)
-            await requestService.createRequest(formData);
+            // Submit to backend
+            const payload = {
+                ...formData,
+                duration: parseInt(formData.duration.split(" ")[0]),
+                studentId: user?._id || user?.id
+            };
+            await requestService.createRequest(payload);
 
             // Show success modal
             setShowSuccess(true);

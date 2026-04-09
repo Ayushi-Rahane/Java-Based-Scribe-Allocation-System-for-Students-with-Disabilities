@@ -45,7 +45,7 @@ const UpcomingSchedule = () => {
                     id: req._id,
                     month,
                     day,
-                    title: req.examName,
+                    title: req.subject || req.examName,
                     time: `${startTime} - ${endTime}`,
                     volunteer: req.volunteerId?.fullName || 'Volunteer assigned',
                     location: req.location

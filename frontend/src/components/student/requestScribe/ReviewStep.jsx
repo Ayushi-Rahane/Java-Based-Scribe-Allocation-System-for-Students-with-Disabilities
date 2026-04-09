@@ -42,7 +42,7 @@ const ReviewStep = ({ setStep, onSubmit, formData, loading }) => {
                         <h4 className="text-sm font-black text-slate-900 uppercase tracking-widest">Exam Summary</h4>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 bg-slate-50 p-8 rounded-[28px] border border-slate-100">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 bg-slate-50 p-8 rounded-[28px] border border-slate-100">
                         <div className="space-y-1">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Subject</p>
                             <p className="text-sm font-bold text-slate-900">{formData.subject || "Not set"}</p>
@@ -71,6 +71,22 @@ const ReviewStep = ({ setStep, onSubmit, formData, loading }) => {
                             <div className="flex items-center gap-1.5">
                                 <Clock size={12} className="text-indigo-600" />
                                 <p className="text-sm font-bold text-slate-900">{formData.duration || "Not set"}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Location</p>
+                            <div className="flex items-center gap-1.5">
+                                <FileText size={12} className="text-indigo-600" />
+                                <p className="text-sm font-bold text-slate-900">{formData.location || "Not set"}</p>
+                            </div>
+                        </div>
+
+                        <div className="space-y-1">
+                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Language</p>
+                            <div className="flex items-center gap-1.5">
+                                <Layers size={12} className="text-indigo-600" />
+                                <p className="text-sm font-bold text-slate-900">{formData.language || "Not set"}</p>
                             </div>
                         </div>
                     </div>

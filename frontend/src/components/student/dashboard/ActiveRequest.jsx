@@ -24,7 +24,7 @@ const ActiveRequest = () => {
         try {
             setLoading(true);
             const data = await requestService.getRequests();
-            const active = data.find(r => r.status === 'pending' || r.status === 'matched');
+            const active = data.find(r => r?.status?.toUpperCase() === 'PENDING' || r?.status?.toUpperCase() === 'MATCHED');
             setActiveRequest(active);
         } catch (err) {
             console.error("Error fetching active request:", err);
@@ -93,16 +93,16 @@ const ActiveRequest = () => {
                     </div>
 
                     <span className={`px-4 py-1.5 rounded-full text-[11px] font-extrabold uppercase tracking-widest border transition-colors ${
-                        activeRequest.status === 'matched'
+                        activeRequest.status?.toUpperCase() === 'MATCHED'
                             ? 'bg-emerald-50 text-emerald-700 border-emerald-100'
                             : 'bg-amber-50 text-amber-700 border-amber-100 animate-pulse-soft'
                     }`}>
-                        {activeRequest.status === 'matched' ? '✓ Scribe Assigned' : '• Matching in progress'}
+                        {activeRequest.status?.toUpperCase() === 'MATCHED' ? '✓ Scribe Assigned' : '• Matching in progress'}
                     </span>
                 </div>
 
                 <div className="mb-6">
-                    <h2 className="text-2xl font-black text-slate-900 mb-1 lg:text-3xl">{activeRequest.examName}</h2>
+                    <h2 className="text-2xl font-black text-slate-900 mb-1 lg:text-3xl">{activeRequest.subject || activeRequest.examName}</h2>
                     <div className="flex items-center gap-4 text-slate-500 font-medium text-sm">
                         <div className="flex items-center gap-1.5">
                             <Calendar size={14} className="text-indigo-500" />
@@ -116,7 +116,7 @@ const ActiveRequest = () => {
                 </div>
 
                 {/* Progress bar for pending */}
-                {activeRequest.status === 'pending' && (
+                {activeRequest.status?.toUpperCase() === 'PENDING' && (
                     <div className="mb-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
                         <div className="flex justify-between items-end mb-2">
                             <p className="text-[12px] font-bold text-slate-600 uppercase tracking-wider">Matching Probability</p>
@@ -132,7 +132,7 @@ const ActiveRequest = () => {
                 )}
 
                 {/* Status card for matched */}
-                {activeRequest.status === 'matched' && activeRequest.volunteerId && (
+                {activeRequest.status?.toUpperCase() === 'MATCHED' && activeRequest.volunteerId && (
                     <div className="mb-6 p-4 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-600/20 flex items-center gap-4">
                         <div className="w-12 h-12 bg-white/20 backdrop-blur-md rounded-xl flex items-center justify-center text-white">
                             <User size={24} />
