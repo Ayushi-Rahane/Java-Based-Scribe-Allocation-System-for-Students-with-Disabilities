@@ -64,5 +64,6 @@ tmp/
 temp/
 
 # Secrets / Configuration (Avoid committing sensitive data)
-# application-local.properties
-# .env
+application-local.properties
+.env
+backend/src/main/resources/application.properties
