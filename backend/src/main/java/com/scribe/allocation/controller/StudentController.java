@@ -59,6 +59,7 @@ public class StudentController {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
         }
 
+        String token = jwtUtil.generateToken(student.getEmail(), "STUDENT");
         student.setPassword(null);
         return ResponseEntity.ok(Map.of(
             "token", token,
