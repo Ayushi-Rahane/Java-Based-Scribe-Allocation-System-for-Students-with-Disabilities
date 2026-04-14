@@ -1,7 +1,8 @@
-import React, { useState } from "react";
-import { Edit3, Save, X, Plus, Check, Camera, User, Mail, Phone, MapPin, Calendar } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Edit3, Save, X, Plus, Check, Camera, User, Mail, Phone, MapPin, Calendar, CheckCircle2, Star, Languages } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { Avatar, Spinner, Toast } from "../../components/UI";
+import volunteerService from "../../services/volunteerService";
 
 const SUBJECTS  = ["Mathematics","Physics","Chemistry","Biology","English","History","Computer Science","Economics","Geography"];
 const LANGUAGES = ["English","Hindi","Marathi","Tamil","Telugu","Bengali","Gujarati","Kannada"];
@@ -19,6 +20,17 @@ export default function ProfilePage() {
   const [toast, setToast] = useState(null);
   const [subInput, setSubInput] = useState("");
   const [langInput, setLangInput] = useState("");
+  const [liveProfile, setLiveProfile] = useState(null);
+
+  // Fetch fresh profile data from backend on mount so rating is always live
+  useEffect(() => {
+    volunteerService.getProfile().then(data => {
+      if (data) setLiveProfile(data);
+    });
+  }, []);
+
+  // Use liveProfile if available, fall back to localStorage user
+  const displayUser = liveProfile || user;
 
   const [form, setForm] = useState({
     fullName: user?.fullName||"", email:user?.email||"", phone:user?.phone||"",
@@ -74,7 +86,7 @@ export default function ProfilePage() {
       {/* Avatar + info */}
       <div style={{ ...card, display:"flex", alignItems:"center", gap:20 }}>
         <div style={{ position:"relative" }}>
-          <Avatar name={user?.fullName||""} size="xl"/>
+          <Avatar name={displayUser?.fullName||""} size="xl"/>
           {editing && (
             <button style={{
               position:"absolute", bottom:0, right:0, width:26, height:26, borderRadius:"50%",
@@ -86,12 +98,12 @@ export default function ProfilePage() {
           )}
         </div>
         <div>
-          <div style={{ fontWeight:700, fontSize:20, color:"#1a1a2e" }}>{user?.fullName}</div>
-          <div style={{ fontSize:13, color:"#9e8fc0", marginTop:2 }}>{user?.email}</div>
+          <div style={{ fontWeight:700, fontSize:20, color:"#1a1a2e" }}>{displayUser?.fullName}</div>
+          <div style={{ fontSize:13, color:"#9e8fc0", marginTop:2 }}>{displayUser?.email}</div>
           <div style={{ display:"flex", gap:8, marginTop:10, flexWrap:"wrap" }}>
-            {user?.verified && <span className="badge badge-green">✓ Verified</span>}
-            <span className="badge badge-purple">📍 {user?.city}, {user?.state}</span>
-            <span className="badge badge-amber">⭐ {user?.rating} rating</span>
+            {displayUser?.verified && <span className="badge badge-green" style={{ display:"flex", alignItems:"center", gap:4 }}><CheckCircle2 size={13} /> Verified</span>}
+            <span className="badge badge-purple" style={{ display:"flex", alignItems:"center", gap:4 }}><MapPin size={13} /> {displayUser?.city}, {displayUser?.state}</span>
+            <span className="badge badge-amber" style={{ display:"flex", alignItems:"center", gap:4 }}><Star size={13} /> {displayUser?.rating > 0 ? `${displayUser?.rating} rating` : 'No ratings yet'}</span>
           </div>
         </div>
       </div>
@@ -170,7 +182,7 @@ export default function ProfilePage() {
             <div style={{ display:"flex", flexWrap:"wrap", gap:7, marginBottom: editing ? 10 : 0 }}>
               {(editing ? form.languages : user?.languages||[]).map(l=>(
                 <span key={l} style={{ display:"inline-flex", alignItems:"center", gap:5, padding:"4px 10px", borderRadius:50, background:"#f5f5f5", color:"#666", fontSize:12, fontWeight:500 }}>
-                  🌐 {l}
+                  <Languages size={12} /> {l}
                   {editing && <button onClick={()=>removeTag("languages",l)} style={{ background:"none",border:"none",cursor:"pointer",color:"#999",padding:0 }}><X size={10}/></button>}
                 </span>
               ))}

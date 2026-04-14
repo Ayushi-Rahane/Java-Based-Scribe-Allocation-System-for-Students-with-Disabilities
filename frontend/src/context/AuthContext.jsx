@@ -8,21 +8,15 @@ export const useAuth = () => {
   return ctx;
 };
 
-// Mock data (UNCHANGED)
-const MOCK_VOLUNTEER = { /* same as your code */ };
-const MOCK_INCOMING = [ /* same as your code */ ];
-const MOCK_ACTIVE = [ /* same as your code */ ];
-const MOCK_HISTORY = [ /* same as your code */ ];
-const MOCK_NOTIFICATIONS = [ /* same as your code */ ];
+// Removed unused MOCK data.
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const [incomingRequests, setIncomingRequests] = useState(MOCK_INCOMING);
-  const [activeRequests, setActiveRequests] = useState(MOCK_ACTIVE);
-  const [history, setHistory] = useState(MOCK_HISTORY);
-  const [notifications, setNotifications] = useState(MOCK_NOTIFICATIONS);
+  const [activeRequests, setActiveRequests] = useState([]);
+  const [history, setHistory] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useEffect(() => {
     const saved = localStorage.getItem("sc_user");
@@ -111,32 +105,62 @@ export const AuthProvider = ({ children }) => {
   };
 
   const updateProfile = async (data) => {
-    await new Promise((r) => setTimeout(r, 600));
-    const updated = { ...user, ...data };
-    setUser(updated);
-    localStorage.setItem("sc_user", JSON.stringify(updated));
-    return { success: true };
-  };
+    try {
+      if(!user) return { success: false, error: "Not logged in" };
+      let updatedUser = { ...user };
+      const role = user.role.toLowerCase();
 
-  const acceptRequest = async (requestId) => {
-    await new Promise((r) => setTimeout(r, 500));
-    const req = incomingRequests.find((r) => r.id === requestId);
-    if (req) {
-      const accepted = {
-        ...req,
-        status: "accepted",
-        acceptedAt: new Date().toISOString(),
-      };
-      setActiveRequests((prev) => [accepted, ...prev]);
-      setIncomingRequests((prev) => prev.filter((r) => r.id !== requestId));
+      if (role === "volunteer") {
+        // Send main profile data
+        const res = await fetch(`http://localhost:8080/api/volunteers/${user.id}/profile`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to update volunteer profile");
+        
+        let serverData = await res.json();
+        
+        // If availability is included, send to availability endpoint
+        if (data.availability) {
+          const availRes = await fetch(`http://localhost:8080/api/volunteers/${user.id}/availability`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data.availability)
+          });
+          if(availRes.ok) {
+             const availData = await availRes.json();
+             serverData.availability = availData.availability || data.availability;
+          }
+        }
+        
+        // Refetch complete profile to ensure fresh data
+        const freshRes = await fetch(`http://localhost:8080/api/volunteers/${user.id}/profile`);
+        if(freshRes.ok) {
+           serverData = await freshRes.json();
+        }
+        
+        updatedUser = { ...updatedUser, ...serverData, id: user.id || serverData.id, token: user.token, role: "volunteer" };
+
+      } else {
+        // Student update
+        const res = await fetch(`http://localhost:8080/api/students/${user.id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        if (!res.ok) throw new Error("Failed to update student profile");
+        const serverData = await res.json();
+        updatedUser = { ...updatedUser, ...serverData, id: user.id || serverData.id, token: user.token, role: "student" };
+      }
+
+      setUser(updatedUser);
+      localStorage.setItem("sc_user", JSON.stringify(updatedUser));
+      return { success: true };
+    } catch (err) {
+      console.error(err);
+      return { success: false, error: "Update failed: " + err.message };
     }
-    return { success: true };
-  };
-
-  const declineRequest = async (requestId) => {
-    await new Promise((r) => setTimeout(r, 400));
-    setIncomingRequests((prev) => prev.filter((r) => r.id !== requestId));
-    return { success: true };
   };
 
   const markNotificationRead = (id) => {
@@ -156,13 +180,10 @@ export const AuthProvider = ({ children }) => {
         register,
         logout,
         updateProfile,
-        incomingRequests,
         activeRequests,
         history,
         notifications,
         unreadCount,
-        acceptRequest,
-        declineRequest,
         markNotificationRead,
       }}
     >

@@ -15,6 +15,8 @@ public class Request {
     private String id;
 
     private String studentId;
+    private String studentName;
+    private String disabilityType;
 
     // Exam Details
     private String subject;

@@ -72,6 +72,7 @@ const RequestScribe = () => {
             // Submit to backend
             const payload = {
                 ...formData,
+                preferredLanguage: formData.language,
                 materials: uploadedMaterials,
                 duration: parseInt(formData.duration.split(" ")[0]),
                 studentId: user?._id || user?.id

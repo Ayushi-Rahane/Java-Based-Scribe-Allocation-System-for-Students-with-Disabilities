@@ -31,8 +31,14 @@ const studentService = {
     const updated = await res.json();
     const adapted = { ...updated, _id: updated.id };
     
-    // Update local storage so page reload stays synced
-    localStorage.setItem("sc_user", JSON.stringify(adapted));
+    // Update local storage carefully to not erase token and role
+    const userStr = localStorage.getItem('sc_user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        const newUser = { ...user, ...adapted };
+        localStorage.setItem("sc_user", JSON.stringify(newUser));
+    }
+    
     return adapted;
   },
 
@@ -59,28 +65,27 @@ const studentService = {
     });
 
     const updatedProfile = await studentService.getProfile();
-    localStorage.setItem("sc_user", JSON.stringify(updatedProfile));
+    
+    // Update local storage carefully to not erase token and role
+    const userStr = localStorage.getItem('sc_user');
+    if (userStr) {
+        const user = JSON.parse(userStr);
+        const newUser = { ...user, ...updatedProfile };
+        localStorage.setItem("sc_user", JSON.stringify(newUser));
+    }
     
     return { success: true, profilePicture: photoUrl };
   },
 
-  // Remaining Mock data for volunteers not yet integrated
   getAvailableVolunteers: async () => {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    return [
-      {
-        _id: "v_001",
-        fullName: "Siddharth Malhotra",
-        rating: 4.8,
-        totalRatings: 12,
-        subjects: ["Mathematics", "Physics"],
-        languages: ["English", "Hindi"],
-        experience: "2 years",
-        completedAssignments: 25,
-        city: "Mumbai",
-        state: "Maharashtra",
-      }
-    ];
+    try {
+        const response = await fetch(`${API_BASE_URL}/volunteers`);
+        if (!response.ok) throw new Error('Failed to fetch available volunteers');
+        return await response.json();
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
   }
 };
 

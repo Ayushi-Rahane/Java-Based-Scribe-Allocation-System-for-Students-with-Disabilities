@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import requestService from "../../services/requestService";
 import { 
     Bell, 
     Plus, 
@@ -22,6 +23,13 @@ const StudentDashboard = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const [loading, setLoading] = useState(false);
+    const [activeCount, setActiveCount] = useState(0);
+
+    useEffect(() => {
+        requestService.getRequests().then(data => {
+            setActiveCount(data.length);
+        }).catch(() => setActiveCount(0));
+    }, []);
 
     const handleNewRequest = () => {
         navigate('/student/request');
@@ -94,7 +102,11 @@ const StudentDashboard = () => {
                                 Welcome back, {firstName}! 
                             </h1>
                             <p className="text-sm md:text-base text-slate-500 font-medium mt-2">
-                                You have <span className="text-indigo-600 font-bold">1 active match</span> in progress today.
+                                {activeCount > 0 ? (
+                                    <>You have <span className="text-indigo-600 font-bold">{activeCount} active {activeCount === 1 ? 'match' : 'matches'}</span> in progress today.</>
+                                ) : (
+                                    <>No active matches right now. <span className="text-indigo-600 font-bold cursor-pointer" onClick={handleNewRequest}>Create one!</span></>
+                                )}
                             </p>
                         </div>
                         <div className="flex items-center gap-3 bg-white px-4 py-2.5 rounded-2xl border border-slate-100 shadow-sm cursor-pointer hover:bg-slate-50 transition-colors">

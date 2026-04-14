@@ -58,13 +58,29 @@ public class MatchingService {
         Volunteer volunteer = volunteerRepository.findById(volunteerId)
                 .orElseThrow(() -> new RuntimeException("Volunteer not found: " + volunteerId));
 
-        // LAYER 1 — Hard filter: same city + state only
-        List<Request> pendingRequests = requestRepository
-                .findByCityIgnoreCaseAndStateIgnoreCaseAndStatus(
-                        volunteer.getCity(),
-                        volunteer.getState(),
-                        "PENDING"
-                );
+        List<Request> pendingRequests;
+
+        boolean hasLocation = volunteer.getCity() != null && !volunteer.getCity().isBlank()
+                && volunteer.getState() != null && !volunteer.getState().isBlank();
+
+        if (hasLocation) {
+            // LAYER 1 — Hard filter: same city + state
+            pendingRequests = requestRepository
+                    .findByCityIgnoreCaseAndStateIgnoreCaseAndStatus(
+                            volunteer.getCity(),
+                            volunteer.getState(),
+                            "PENDING"
+                    );
+
+            // If no city-matched results, fall back to ALL pending (handles requests
+            // submitted before the city/state fix was deployed)
+            if (pendingRequests.isEmpty()) {
+                pendingRequests = requestRepository.findByStatus("PENDING");
+            }
+        } else {
+            // Volunteer has no city/state — show all pending requests
+            pendingRequests = requestRepository.findByStatus("PENDING");
+        }
 
         if (pendingRequests.isEmpty()) {
             return Collections.emptyList();

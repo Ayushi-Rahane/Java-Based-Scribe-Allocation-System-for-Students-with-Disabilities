@@ -174,8 +174,10 @@ const HistoryRequestCard = ({ request, formatDate }) => {
         'cancelled': 'Request Cancelled'
     };
 
-    const volunteerName = request.volunteerId?.fullName || 'No volunteer assigned';
-    const initials = volunteerName.split(' ').map(n => n[0]).join('').toUpperCase();
+    const volunteerName = request.volunteerName || 'No volunteer assigned';
+    const initials = volunteerName !== 'No volunteer assigned'
+        ? volunteerName.split(' ').map(n => n[0]).join('').toUpperCase()
+        : '?';
 
     return (
         <div className="bg-white rounded-[40px] border border-slate-100 p-8 shadow-sm hover:shadow-xl hover:shadow-indigo-600/5 transition-all group animate-fadeIn">
@@ -237,7 +239,7 @@ const HistoryRequestCard = ({ request, formatDate }) => {
                         </div>
                         {request.feedback ? (
                             <p className="text-xs font-bold text-slate-500 italic max-w-[240px] text-center lg:text-right leading-relaxed bg-white/50 p-3 rounded-2xl border border-dashed border-slate-200 lg:bg-transparent lg:p-0 lg:border-0">
-                                "{request.feedback}"
+                                "{request.review || request.feedback}"
                             </p>
                         ) : (
                             <p className="text-xs font-bold text-slate-300 italic">No feedback added</p>

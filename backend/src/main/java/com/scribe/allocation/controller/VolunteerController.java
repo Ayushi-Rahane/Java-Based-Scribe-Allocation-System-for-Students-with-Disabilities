@@ -49,6 +49,17 @@ public class VolunteerController {
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     // ────────────────────────────────────────────────────────────────────────
+    // 0. GET ALL VOLUNTEERS
+    // GET /api/volunteers
+    // ────────────────────────────────────────────────────────────────────────
+    @GetMapping
+    public ResponseEntity<?> getAllVolunteers() {
+        List<Volunteer> all = volunteerRepository.findAll();
+        all.forEach(v -> v.setPassword(null));
+        return ResponseEntity.ok(all);
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
     // 1. REGISTRATION
     // POST /api/volunteers/register
     // ────────────────────────────────────────────────────────────────────────
@@ -183,6 +194,12 @@ public class VolunteerController {
                         volunteer.setSubjects((List<String>) body.get("subjects"));
                     if (body.containsKey("languages"))
                         volunteer.setLanguages((List<String>) body.get("languages"));
+                    if (body.containsKey("dateOfBirth")) {
+                        Object dob = body.get("dateOfBirth");
+                        if (dob != null && !dob.toString().isBlank()) {
+                            volunteer.setDateOfBirth(LocalDate.parse(dob.toString()));
+                        }
+                    }
 
                     Volunteer updated = volunteerRepository.save(volunteer);
                     updated.setPassword(null);
@@ -405,7 +422,7 @@ public class VolunteerController {
                     .body(Map.of("error", "This session has already been rated"));
         }
 
-        int rating = (int) body.get("rating");
+        int rating = ((Number) body.get("rating")).intValue();
         if (rating < 1 || rating > 5) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
@@ -475,6 +492,52 @@ public class VolunteerController {
         return ResponseEntity.ok(Map.of(
                 "message", "Session marked as completed",
                 "requestId", requestId
+        ));
+    }
+
+    // ────────────────────────────────────────────────────────────────────────
+    // 13. RECALCULATE VOLUNTEER RATING
+    // POST /api/volunteers/{id}/recalculate-rating
+    // Scans all COMPLETED requests with ratings and recomputes the average
+    // ────────────────────────────────────────────────────────────────────────
+    @PostMapping("/{id}/recalculate-rating")
+    public ResponseEntity<?> recalculateRating(@PathVariable String id) {
+        Optional<Volunteer> optVolunteer = volunteerRepository.findById(id);
+        if (optVolunteer.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .body(Map.of("error", "Volunteer not found"));
+        }
+
+        Volunteer volunteer = optVolunteer.get();
+
+        // Get all completed requests for this volunteer
+        List<Request> completed = requestRepository
+                .findByVolunteerIdAndStatus(id, "COMPLETED");
+
+        // Filter to those with ratings
+        List<Request> rated = completed.stream()
+                .filter(r -> r.getRating() != null && r.getRating() > 0)
+                .toList();
+
+        if (rated.isEmpty()) {
+            volunteer.setRating(0.0);
+            volunteer.setTotalRatings(0);
+        } else {
+            double sum = rated.stream().mapToInt(Request::getRating).sum();
+            double avg = sum / rated.size();
+            volunteer.setRating(Math.round(avg * 10.0) / 10.0);
+            volunteer.setTotalRatings(rated.size());
+        }
+
+        volunteer.setTotalSessionsCompleted(completed.size());
+        volunteerRepository.save(volunteer);
+
+        return ResponseEntity.ok(Map.of(
+                "message", "Rating recalculated successfully",
+                "averageRating", volunteer.getRating(),
+                "totalRatings", volunteer.getTotalRatings(),
+                "totalSessionsCompleted", volunteer.getTotalSessionsCompleted()
         ));
     }
 }

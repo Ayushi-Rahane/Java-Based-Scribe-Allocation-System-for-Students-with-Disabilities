@@ -18,6 +18,9 @@ public interface RequestRepository extends MongoRepository<Request, String> {
     // ✅ FIX 2
     List<Request> findByCityIgnoreCaseAndStateIgnoreCaseAndStatus(String city, String state, String status);
 
+    // Fallback: all PENDING requests (when location data not set)
+    List<Request> findByStatus(String status);
+
     // Optional but useful
     List<Request> findByStudentId(String studentId);
 }

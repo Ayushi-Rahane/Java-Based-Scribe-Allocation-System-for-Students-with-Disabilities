@@ -33,33 +33,25 @@ const ActiveRequests = () => {
         try {
             setLoading(true);
             setError(null);
+            // requestService.getRequests() now returns only pending/accepted
+            // with volunteerName/volunteerPhone pre-fetched
             const data = await requestService.getRequests();
-
-            // Filter out completed and cancelled requests
-            const activeRequests = data.filter(
-                req => req.status !== 'completed' && req.status !== 'cancelled'
-            );
-
-            // Map backend data to component format
-            const mappedRequests = activeRequests.map(req => ({
-                id: req._id,
+            const mapped = data.map(req => ({
+                id: req._id || req.id,
                 subject: req.subject,
                 type: req.examType,
-                date: new Date(req.examDate).toLocaleDateString('en-US', {
-                    month: 'short',
-                    day: 'numeric',
-                    year: 'numeric'
-                }),
+                date: req.examDate,
                 time: req.examTime,
                 duration: req.duration,
                 requirements: req.requirements,
                 status: mapStatus(req.status),
-                volunteer: req.volunteerId?.fullName || null,
-                matchProbability: req.status === 'pending' ? 60 : req.status === 'matched' ? 100 : 80,
-                notifiedVolunteers: req.status === 'pending' ? 3 : 5
+                volunteer: req.volunteerName || null,
+                volunteerPhone: req.volunteerPhone || null,
+                volunteerRating: req.volunteerRating || null,
+                matchProbability: req.status === 'pending' ? 62 : 100,
+                notifiedVolunteers: 5,
             }));
-
-            setRequests(mappedRequests);
+            setRequests(mapped);
             setLoading(false);
         } catch (err) {
             console.error("Error fetching requests:", err);
@@ -72,8 +64,9 @@ const ActiveRequests = () => {
     const mapStatus = (backendStatus) => {
         const statusMap = {
             'pending': 'Matching in Progress',
-            'matched': 'Matched',
-            'in-progress': 'Matched'
+            'accepted': 'Volunteer Assigned',
+            'matched': 'Volunteer Assigned',
+            'in-progress': 'Volunteer Assigned'
         };
         return statusMap[backendStatus] || 'Pending';
     };
@@ -301,6 +294,7 @@ const RequestCard = ({ request, onDelete, deleteConfirm, onConfirmDelete, onCanc
     const statusConfig = {
         "Matching in Progress": { bg: "bg-amber-50", text: "text-amber-700", border: "border-amber-100" },
         "Pending": { bg: "bg-slate-50", text: "text-slate-600", border: "border-slate-100" },
+        "Volunteer Assigned": { bg: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-100" },
         "Matched": { bg: "bg-indigo-50", text: "text-indigo-700", border: "border-indigo-100" },
     };
 
@@ -386,20 +380,25 @@ const RequestCard = ({ request, onDelete, deleteConfirm, onConfirmDelete, onCanc
                     </div>
                 )}
 
-                {/* Matched Info */}
-                {request.status === "Matched" && (
+                {/* Matched/Assigned Info */}
+                {(request.status === "Volunteer Assigned" || request.status === "Matched") && (
                     <div className="mt-8">
-                        <div className="bg-indigo-50 border border-indigo-100/50 rounded-[28px] p-6 mb-6 flex items-start gap-4">
-                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 border border-indigo-100">
-                                <ShieldCheck className="text-indigo-600" size={20} />
+                        <div className="bg-emerald-50 border border-emerald-100/50 rounded-[28px] p-6 mb-6 flex items-start gap-4">
+                            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shrink-0 border border-emerald-100">
+                                <ShieldCheck className="text-emerald-600" size={20} />
                             </div>
                             <div>
-                                <p className="text-sm font-bold text-indigo-900 mb-1">
-                                    Matched with {request.volunteer}
+                                <p className="text-sm font-bold text-emerald-900 mb-1">
+                                    Volunteer Assigned: <span className="text-emerald-700">{request.volunteer || 'A Verified Volunteer'}</span>
                                 </p>
-                                <p className="text-xs font-semibold text-indigo-700/70 leading-relaxed">
-                                    A qualified scribe has accepted your request. We've notified them and they'll be at the venue on time.
+                                <p className="text-xs font-semibold text-emerald-700/70 leading-relaxed">
+                                    A qualified scribe has accepted your request. They will be at the venue on time.
                                 </p>
+                                {request.volunteerPhone && (
+                                    <p className="text-xs font-bold text-emerald-800 mt-2">
+                                        Contact: {request.volunteerPhone}
+                                    </p>
+                                )}
                             </div>
                         </div>
                         <button

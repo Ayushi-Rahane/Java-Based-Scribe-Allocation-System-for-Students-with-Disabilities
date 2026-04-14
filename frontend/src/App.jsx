@@ -17,7 +17,6 @@ import Profile from "./pages/student/Profile";
 import DashboardPage from "./pages/volunteer/DashboardPage";
 import RequestsPage from "./pages/volunteer/RequestsPage";
 import ActivePage from "./pages/volunteer/ActivePage";
-import HistoryPage from "./pages/volunteer/HistoryPage";
 import RatingsPage from "./pages/volunteer/RatingsPage";
 import ProfilePage from "./pages/volunteer/ProfilePage";
 import NotificationsPage from "./pages/volunteer/NotificationsPage";
@@ -147,14 +146,7 @@ function AppRoutes() {
           </Protected>
         }
       />
-      <Route
-        path="/history"
-        element={
-          <Protected>
-            <AppLayout><HistoryPage /></AppLayout>
-          </Protected>
-        }
-      />
+
       <Route
         path="/ratings"
         element={

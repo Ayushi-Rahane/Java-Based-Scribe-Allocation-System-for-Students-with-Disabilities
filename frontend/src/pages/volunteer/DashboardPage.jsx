@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   InboxIcon, ClipboardCheck, Award, TrendingUp,
   ArrowRight, Search, Bell, Calendar, Clock, Zap,
+  CheckCircle2, MapPin, Languages, Hand
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
+import volunteerService from "../../services/volunteerService";
 import { Avatar, Stars, DisabilityBadge, MatchScore } from "../../components/UI";
 
 const C = {
@@ -81,8 +83,8 @@ function WelcomeBanner({ user }) {
     <div className="welcome-banner">
       <div style={{ position: "relative", zIndex: 1, maxWidth: "60%" }}>
         <p style={{ margin: "0 0 4px", fontSize: 12, opacity: 0.8, fontFamily: "'Poppins', sans-serif" }}>{date}</p>
-        <h1 style={{ margin: "0 0 6px", fontSize: 26, fontWeight: 700, fontFamily: "'Poppins', sans-serif" }}>
-          {greeting}, {user?.fullName?.split(" ")[0]}! 👋
+        <h1 style={{ margin: "0 0 6px", fontSize: 26, fontWeight: 700, fontFamily: "'Poppins', sans-serif", display: "flex", alignItems: "center", gap: 8 }}>
+          {greeting}, {user?.fullName?.split(" ")[0]}! <Hand size={26} className="text-yellow-400" />
         </h1>
         <p style={{ margin: 0, fontSize: 13, opacity: 0.85, fontFamily: "'Poppins', sans-serif" }}>
           Always making a difference — keep up the amazing work!
@@ -93,14 +95,14 @@ function WelcomeBanner({ user }) {
             padding: "4px 14px", fontSize: 12, fontWeight: 500,
             fontFamily: "'Poppins', sans-serif",
           }}>
-            ✓ Verified Volunteer
+            <span style={{ display: "flex", alignItems: "center", gap: 4 }}><CheckCircle2 size={13} /> Verified Volunteer</span>
           </span>
           <span style={{
             background: "rgba(255,255,255,0.2)", borderRadius: 50,
             padding: "4px 14px", fontSize: 12, fontWeight: 500,
             fontFamily: "'Poppins', sans-serif",
           }}>
-            📍 {user?.city}, {user?.state}
+            <span style={{ display: "flex", alignItems: "center", gap: 4 }}><MapPin size={13} /> {user?.city}, {user?.state}</span>
           </span>
         </div>
       </div>
@@ -165,14 +167,18 @@ function RequestCard({ req, navigate }) {
           <Avatar name={req.studentName} size="sm" />
           <div>
             <div style={{ fontSize: 13, fontWeight: 600, color: C.textMain, fontFamily: "'Poppins', sans-serif" }}>{req.studentName}</div>
-            <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Poppins', sans-serif" }}>{req.city}, {req.state}</div>
+            <div style={{ fontSize: 11, color: C.textMuted, fontFamily: "'Poppins', sans-serif" }}>{req.city}</div>
           </div>
         </div>
         <MatchScore score={req.matchScore} />
       </div>
 
+      {/* Subject in big font */}
+      <div style={{ fontSize: 17, fontWeight: 700, color: C.textMain, marginBottom: 8, fontFamily: "'Poppins', sans-serif" }}>
+        {req.subject}
+      </div>
+
       <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
-        <span className="badge badge-purple">{req.subject}</span>
         <DisabilityBadge type={req.disability} />
       </div>
 
@@ -200,10 +206,31 @@ function RequestCard({ req, navigate }) {
 
 // ─── Main Dashboard ───────────────────────────────────────────────────────────
 export default function DashboardPage() {
-  const { user, incomingRequests, activeRequests, history, unreadCount } = useAuth();
+  const { user, unreadCount } = useAuth();
   const navigate = useNavigate();
+  const [incomingRequests, setIncomingRequests] = useState([]);
+  const [activeAssignments, setActiveAssignments] = useState([]);
+  const [completedHistory, setCompletedHistory] = useState([]);
+  const [profileData, setProfileData] = useState(null);
 
-  const upcomingExam = activeRequests.find(r => new Date(r.examDate) >= new Date());
+  useEffect(() => {
+    const fetchAll = async () => {
+      const [requests, active, history, profile] = await Promise.all([
+        volunteerService.getMatchedRequests(),
+        volunteerService.getActiveAssignments(),
+        volunteerService.getHistory(),
+        volunteerService.getProfile(),
+      ]);
+      setIncomingRequests(requests);
+      setActiveAssignments(active);
+      setCompletedHistory(history);
+      setProfileData(profile);
+    };
+    fetchAll();
+  }, []);
+
+  const upcomingExam = activeAssignments.find(r => r.examDate && new Date(r.examDate) >= new Date());
+  const totalSessions = profileData?.totalSessionsCompleted || user?.totalSessionsCompleted || 0;
 
   return (
     <div style={{ padding: "28px 32px", background: C.primaryLight, minHeight: "100vh", fontFamily: "'Poppins', sans-serif" }}>
@@ -217,9 +244,9 @@ export default function DashboardPage() {
       {/* Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18, marginBottom: 28 }}>
         <StatCard icon={InboxIcon}      label="Incoming Requests"  value={incomingRequests.length}        iconColor="#4F46E5" iconBg="#EDE9FE" delay={0.05} />
-        <StatCard icon={ClipboardCheck} label="Active Assignments" value={activeRequests.length}           iconColor="#059669" iconBg="#D1FAE5" delay={0.10} />
-        <StatCard icon={TrendingUp}     label="Total Sessions"     value={user?.totalSessions || 0}        iconColor="#0891B2" iconBg="#CFFAFE" delay={0.15} />
-        <StatCard icon={Award}          label="Certificates"       value={user?.certificatesEarned || 0}   iconColor="#D97706" iconBg="#FEF3C7" delay={0.20} />
+        <StatCard icon={ClipboardCheck} label="Active Assignments" value={activeAssignments.length}       iconColor="#059669" iconBg="#D1FAE5" delay={0.10} />
+        <StatCard icon={TrendingUp}     label="Total Sessions"     value={totalSessions}                  iconColor="#0891B2" iconBg="#CFFAFE" delay={0.15} />
+        <StatCard icon={Award}          label="Avg Rating"         value={profileData?.rating?.toFixed(1) || "—"}  iconColor="#D97706" iconBg="#FEF3C7" delay={0.20} />
       </div>
 
       {/* Main 2-col grid */}
@@ -315,12 +342,12 @@ export default function DashboardPage() {
             <div style={{ display: "flex", flexWrap: "wrap", gap: 7 }}>
               {(user?.languages || []).map(l => (
                 <span key={l} style={{
-                  display: "inline-flex", alignItems: "center",
+                  display: "inline-flex", alignItems: "center", gap: "6px",
                   padding: "4px 12px", borderRadius: 50,
                   background: "#F3F4F6", color: "#374151",
                   fontSize: 12, fontWeight: 500,
                 }}>
-                  🌐 {l}
+                  <Languages size={13} /> {l}
                 </span>
               ))}
             </div>
@@ -330,23 +357,29 @@ export default function DashboardPage() {
           <div className="card">
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 14 }}>
               <div style={{ fontSize: 13, fontWeight: 700, color: C.textMain }}>Recent Sessions</div>
-              <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => navigate("/history")}>
+              <button className="btn-ghost" style={{ fontSize: 11 }} onClick={() => navigate("/ratings")}>
                 See all
               </button>
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              {history.slice(0, 3).map(h => (
-                <div key={h.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
-                    <Avatar name={h.studentName} size="sm" />
-                    <div>
-                      <div style={{ fontSize: 12, fontWeight: 600, color: C.textMain }}>{h.subject}</div>
-                      <div style={{ fontSize: 11, color: C.textFaint }}>{h.studentName}</div>
-                    </div>
-                  </div>
-                  <Stars rating={h.rating} />
+              {completedHistory.length === 0 ? (
+                <div style={{ textAlign: "center", padding: "16px 0", color: C.textFaint, fontSize: 12 }}>
+                  No completed sessions yet.
                 </div>
-              ))}
+              ) : (
+                completedHistory.slice(0, 3).map(h => (
+                  <div key={h.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 9 }}>
+                      <Avatar name={h.studentName || "Student"} size="sm" />
+                      <div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: C.textMain }}>{h.subject}</div>
+                        <div style={{ fontSize: 11, color: C.textFaint }}>{h.studentName || "Student"}</div>
+                      </div>
+                    </div>
+                    <Stars rating={h.rating || 0} />
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

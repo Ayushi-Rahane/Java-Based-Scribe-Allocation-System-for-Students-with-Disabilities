@@ -10,8 +10,7 @@ const NAV_ITEMS = [
   { label: "Dashboard",          path: "/dashboard", icon: LayoutDashboard },
   { label: "Incoming Requests",  path: "/requests",  icon: InboxIcon },
   { label: "Active Assignments", path: "/active",    icon: ClipboardCheck },
-  { label: "History",            path: "/history",   icon: History },
-  { label: "Ratings & Certs",    path: "/ratings",   icon: Award },
+  { label: "Ratings & History",  path: "/ratings",   icon: Award },
   { label: "My Profile",         path: "/profile",   icon: User },
 ];
 
