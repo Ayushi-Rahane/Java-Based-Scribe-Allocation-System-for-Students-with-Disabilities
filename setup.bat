@@ -19,6 +19,7 @@ if %errorlevel% neq 0 (
 )
 
 :: 2. Check for Java
+
 where java >nul 2>nul
 if %errorlevel% neq 0 (
     echo [ERROR] Java is not installed. Please install JDK 17 or higher.

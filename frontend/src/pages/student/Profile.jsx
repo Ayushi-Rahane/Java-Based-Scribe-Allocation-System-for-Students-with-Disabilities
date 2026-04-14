@@ -38,33 +38,48 @@ const Profile = () => {
     const [uploadingPhoto, setUploadingPhoto] = useState(false);
     const navigate = useNavigate();
 
-    // Hydrate form with user profile on mount
+    // Fetch profile from database on mount
     useEffect(() => {
-        if (currentUser) {
-            setProfile(currentUser);
-            setFormData({
-                fullName: currentUser.fullName || '',
-                phone: currentUser.phone || '',
-                dateOfBirth: currentUser.dateOfBirth || '',
-                university: currentUser.university || '',
-                course: currentUser.course || '',
-                disabilityType: currentUser.disabilityType || '',
-                certificateNumber: currentUser.certificateNumber || '',
-                specificNeeds: currentUser.specificNeeds || '',
-                currentYear: currentUser.currentYear || '',
-                examFrequency: currentUser.examFrequency || '',
-                preferredSubjects: currentUser.preferredSubjects || [],
-                academicNotes: currentUser.academicNotes || '',
-                preferredLanguage: currentUser.preferredLanguage || '',
-                notificationMethod: currentUser.notificationMethod || '',
-                preferredTime: currentUser.preferredTime || '',
-                city: currentUser.city || '',
-                state: currentUser.state || ''
-            });
-            setLoading(false);
-        } else {
-            navigate("/login");
-        }
+        const fetchProfileData = async () => {
+            if (!currentUser) {
+                navigate("/login");
+                return;
+            }
+
+            try {
+                setLoading(true);
+                const actualProfile = await studentService.getProfile();
+                if (actualProfile) {
+                    setProfile(actualProfile);
+                    setFormData({
+                        fullName: actualProfile.fullName || '',
+                        phone: actualProfile.phone || '',
+                        dateOfBirth: actualProfile.dateOfBirth || '',
+                        university: actualProfile.university || '',
+                        course: actualProfile.course || '',
+                        disabilityType: actualProfile.disabilityType || '',
+                        certificateNumber: actualProfile.certificateNumber || '',
+                        specificNeeds: actualProfile.specificNeeds || '',
+                        currentYear: actualProfile.currentYear || '',
+                        examFrequency: actualProfile.examFrequency || '',
+                        preferredSubjects: actualProfile.preferredSubjects || [],
+                        academicNotes: actualProfile.academicNotes || '',
+                        preferredLanguage: actualProfile.preferredLanguage || '',
+                        notificationMethod: actualProfile.notificationMethod || '',
+                        preferredTime: actualProfile.preferredTime || '',
+                        city: actualProfile.city || '',
+                        state: actualProfile.state || ''
+                    });
+                }
+            } catch (err) {
+                console.error("Failed to fetch profile:", err);
+                setError("Failed to load profile data");
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchProfileData();
     }, [currentUser, navigate]);
 
     const handleInputChange = (field, value) => {
