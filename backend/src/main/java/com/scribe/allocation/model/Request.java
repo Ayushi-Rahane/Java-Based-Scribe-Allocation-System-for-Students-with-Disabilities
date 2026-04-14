@@ -5,35 +5,44 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Document(collection = "requests")
 public class Request {
+
     @Id
     private String id;
+
     private String studentId;
-    
+
     // Exam Details
     private String subject;
     private String examType;
-    private String examDate; 
-    private String examTime; 
-    private Integer duration; 
-    private String language;
+    private String examDate;
+    private String examTime;
+    private Integer duration;
+
+    private String preferredLanguage; // ✅ FIXED (was "language")
+    private String city;              // ✅ REQUIRED for matching
+    private String state;             // ✅ REQUIRED for matching
     private String location;
     private String requirements;
-    private java.util.List<String> materials; // Will store file URLs/Identifiers
-    
-    // Lifecycle Status
-    // e.g. PENDING, MATCHED, COMPLETED, CANCELLED
-    private String status;
-    
-    // Matched Volunteer
+
+    private List<String> materials;
+
+    // Status
+    private String status; // PENDING, MATCHED, COMPLETED
+
+    // Volunteer
     private String volunteerId;
-    
-    // Post-Completion Review
+
+    // Review
     private Integer rating;
     private String review;
-    
+
+    // Timestamps
     private LocalDateTime createdAt;
+    private LocalDateTime acceptedAt;   // ✅ ADD THIS
+    private LocalDateTime completedAt;  // ✅ ADD THIS
 }
