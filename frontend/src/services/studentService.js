@@ -4,7 +4,7 @@ const getStudentId = () => {
     const userStr = localStorage.getItem('sc_user');
     if (userStr) {
         const user = JSON.parse(userStr);
-        return user._id || user.id;
+        return user.id || user._id || user.studentId;
     }
     return null;
 };

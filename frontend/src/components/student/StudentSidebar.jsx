@@ -44,15 +44,39 @@ const StudentSidebar = () => {
     };
 
     useEffect(() => {
-        if (user && user.fullName) {
-            setStudentName(user.fullName);
-            const parts = user.fullName.split(" ");
-            const initials = parts.length >= 2
-                ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
-                : user.fullName.substring(0, 2).toUpperCase();
-            setStudentInitials(initials);
-            setProfilePicture(user.profilePicture);
-        }
+        const loadProfile = async () => {
+            if (!user) return;
+
+            // If we have full info in context, use it
+            if (user.fullName) {
+                setStudentName(user.fullName);
+                const parts = user.fullName.split(" ");
+                const initials = parts.length >= 2
+                    ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                    : user.fullName.substring(0, 2).toUpperCase();
+                setStudentInitials(initials);
+                setProfilePicture(user.profilePicture);
+            } else {
+                // Otherwise fetch it once
+                try {
+                    const profile = await studentService.getProfile();
+                    if (profile) {
+                        setStudentName(profile.fullName);
+                        const parts = profile.fullName.split(" ");
+                        const initials = parts.length >= 2
+                            ? `${parts[0][0]}${parts[1][0]}`.toUpperCase()
+                            : profile.fullName.substring(0, 2).toUpperCase();
+                        setStudentInitials(initials);
+                        setProfilePicture(profile.profilePicture);
+                    }
+                } catch (err) {
+                    console.error("Sidebar failed to fetch profile:", err);
+                    setStudentName("Student User");
+                }
+            }
+        };
+
+        loadProfile();
     }, [user]);
 
     const handleLogout = () => {

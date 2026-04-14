@@ -47,8 +47,16 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (response.ok) {
-        setUser(data);
-        localStorage.setItem("sc_user", JSON.stringify(data));
+        // Flatten the nested student/volunteer object if present
+        const userData = data.student || data.volunteer || data;
+        const userObj = {
+          ...userData,
+          id: userData.id || data.studentId || data.volunteerId,
+          token: data.token,
+          role: role.toLowerCase()
+        };
+        setUser(userObj);
+        localStorage.setItem("sc_user", JSON.stringify(userObj));
         return { success: true };
       }
 
@@ -75,8 +83,16 @@ export const AuthProvider = ({ children }) => {
       const resData = await response.json();
 
       if (response.ok) {
-        setUser(resData);
-        localStorage.setItem("sc_user", JSON.stringify(resData));
+        // Flatten nested object if present
+        const userData = resData.student || resData.volunteer || resData;
+        const userObj = {
+          ...userData,
+          id: userData.id || resData.studentId || resData.volunteerId,
+          token: resData.token,
+          role: data.role.toLowerCase()
+        };
+        setUser(userObj);
+        localStorage.setItem("sc_user", JSON.stringify(userObj));
         return { success: true };
       }
 

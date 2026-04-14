@@ -35,7 +35,6 @@ import java.util.*;
  */
 @RestController
 @RequestMapping("/api/volunteers")
-@CrossOrigin(origins = "*")
 public class VolunteerController {
 
     @Autowired

@@ -282,7 +282,9 @@ const styles = {
     justifyContent: "center",
     gap: 10,
     padding: "11px 16px",
-    border: "1.5px solid #DDD6FE",
+    borderWidth: "1.5px",
+    borderStyle: "solid",
+    borderColor: "#DDD6FE",
     borderRadius: 12,
     background: "white",
     cursor: "pointer",
@@ -584,9 +586,7 @@ export default function LoginPage() {
           </p>
         </div>
 
-        <p style={styles.demoText}>
-          Demo: enter any email + any password
-        </p>
+
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/students")
-@CrossOrigin(origins = "http://localhost:5173")
+
 public class StudentController {
 
     @Autowired
@@ -34,9 +34,11 @@ public class StudentController {
         student.setPassword(passwordEncoder.encode(student.getPassword()));
         Student saved = studentRepository.save(student);
         String token = jwtUtil.generateToken(saved.getEmail(), "STUDENT");
+        saved.setPassword(null);
         return ResponseEntity.ok(Map.of(
             "token", token,
-            "studentId", saved.getId(),
+            "student", saved,
+            "role", "student",
             "message", "Registration successful"
         ));
     }
@@ -57,10 +59,11 @@ public class StudentController {
             return ResponseEntity.status(401).body(Map.of("error", "Invalid email or password"));
         }
 
-        String token = jwtUtil.generateToken(student.getEmail(), "STUDENT");
+        student.setPassword(null);
         return ResponseEntity.ok(Map.of(
             "token", token,
-            "studentId", student.getId(),
+            "student", student,
+            "role", "student",
             "message", "Login successful"
         ));
     }
