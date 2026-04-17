@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  // ---------------- LOGIN FIXED ----------------
+  // ---------------- LOGIN----------------
   const login = async (email, password, role = "student") => {
     try {
       const url =
@@ -106,7 +106,7 @@ export const AuthProvider = ({ children }) => {
 
   const updateProfile = async (data) => {
     try {
-      if(!user) return { success: false, error: "Not logged in" };
+      if (!user) return { success: false, error: "Not logged in" };
       let updatedUser = { ...user };
       const role = user.role.toLowerCase();
 
@@ -118,9 +118,9 @@ export const AuthProvider = ({ children }) => {
           body: JSON.stringify(data)
         });
         if (!res.ok) throw new Error("Failed to update volunteer profile");
-        
+
         let serverData = await res.json();
-        
+
         // If availability is included, send to availability endpoint
         if (data.availability) {
           const availRes = await fetch(`http://localhost:8080/api/volunteers/${user.id}/availability`, {
@@ -128,18 +128,18 @@ export const AuthProvider = ({ children }) => {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(data.availability)
           });
-          if(availRes.ok) {
-             const availData = await availRes.json();
-             serverData.availability = availData.availability || data.availability;
+          if (availRes.ok) {
+            const availData = await availRes.json();
+            serverData.availability = availData.availability || data.availability;
           }
         }
-        
+
         // Refetch complete profile to ensure fresh data
         const freshRes = await fetch(`http://localhost:8080/api/volunteers/${user.id}/profile`);
-        if(freshRes.ok) {
-           serverData = await freshRes.json();
+        if (freshRes.ok) {
+          serverData = await freshRes.json();
         }
-        
+
         updatedUser = { ...updatedUser, ...serverData, id: user.id || serverData.id, token: user.token, role: "volunteer" };
 
       } else {

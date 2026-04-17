@@ -1,5 +1,5 @@
 import React from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Zap, Star, Eye, Ear, Hand, Brain, Accessibility, X } from "lucide-react";
 
 // ─── Spinner ──────────────────────────────────────────────────────────────────
 export const Spinner = ({ size = 18, color = "#7c4dff", className = "" }) => (
@@ -81,7 +81,7 @@ export const MatchScore = ({ score }) => {
       fontFamily: "'Poppins', sans-serif",
       display: "inline-flex", alignItems: "center", gap: 3,
     }}>
-      ⚡ {score}% match
+      <Zap size={12} fill="currentColor" strokeWidth={0} /> {score}% match
     </span>
   );
 };
@@ -90,7 +90,9 @@ export const MatchScore = ({ score }) => {
 export const Stars = ({ rating, max = 5 }) => (
   <div style={{ display: "flex", gap: 2 }}>
     {Array.from({ length: max }).map((_, i) => (
-      <span key={i} style={{ fontSize: 13, color: i < Math.round(rating) ? "#f39c12" : "#e0d9ff" }}>★</span>
+      <span key={i} style={{ display: "inline-flex", alignItems: "center", color: i < Math.round(rating) ? "#f39c12" : "#e0d9ff" }}>
+        <Star size={14} strokeWidth={2} fill={i < Math.round(rating) ? "currentColor" : "none"} />
+      </span>
     ))}
   </div>
 );
@@ -98,13 +100,14 @@ export const Stars = ({ rating, max = 5 }) => (
 // ─── Disability Badge ─────────────────────────────────────────────────────────
 export const DisabilityBadge = ({ type }) => {
   const map = {
-    "Visual Impairment":   { emoji: "👁", bg: "#e8f4ff", color: "#2196f3" },
-    "Hearing Impairment":  { emoji: "👂", bg: "#f3e8ff", color: "#9c27b0" },
-    "Motor Disability":    { emoji: "🤲", bg: "#fff3e8", color: "#ff9800" },
-    "Learning Disability": { emoji: "🧠", bg: "#ffe8f0", color: "#e91e63" },
-    "Multiple Disabilities":{ emoji: "♿", bg: "#e8fff5", color: "#00bcd4" },
+    "Visual Impairment":   { icon: Eye, bg: "#e8f4ff", color: "#2196f3" },
+    "Hearing Impairment":  { icon: Ear, bg: "#f3e8ff", color: "#9c27b0" },
+    "Motor Disability":    { icon: Hand, bg: "#fff3e8", color: "#ff9800" },
+    "Learning Disability": { icon: Brain, bg: "#ffe8f0", color: "#e91e63" },
+    "Multiple Disabilities":{ icon: Accessibility, bg: "#e8fff5", color: "#00bcd4" },
   };
-  const s = map[type] || { emoji: "♿", bg: "#f5f5f5", color: "#888" };
+  const s = map[type] || { icon: Accessibility, bg: "#f5f5f5", color: "#888" };
+  const IconComponent = s.icon;
   return (
     <span style={{
       display: "inline-flex", alignItems: "center", gap: 5,
@@ -113,7 +116,7 @@ export const DisabilityBadge = ({ type }) => {
       fontSize: 11, fontWeight: 600,
       fontFamily: "'Poppins', sans-serif",
     }}>
-      {s.emoji} {type}
+      <IconComponent size={12} strokeWidth={2.5} /> {type}
     </span>
   );
 };
@@ -136,7 +139,7 @@ export const Toast = ({ message, type = "success", onClose }) => {
       fontFamily: "'Poppins', sans-serif",
     }}>
       <span style={{ fontSize: 13, color: s.color, fontWeight: 500 }}>{message}</span>
-      <button onClick={onClose} style={{ background: "none", border: "none", color: s.color, cursor: "pointer", fontSize: 16, lineHeight: 1 }}>✕</button>
+      <button onClick={onClose} style={{ background: "none", border: "none", color: s.color, cursor: "pointer", display: "inline-flex", alignItems: "center" }}><X size={16} strokeWidth={2.5} /></button>
     </div>
   );
 };

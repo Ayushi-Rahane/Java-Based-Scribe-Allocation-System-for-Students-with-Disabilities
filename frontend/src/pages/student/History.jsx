@@ -237,7 +237,7 @@ const HistoryRequestCard = ({ request, formatDate }) => {
                                 ))}
                             </div>
                         </div>
-                        {request.feedback ? (
+                        {request.review || request.feedback ? (
                             <p className="text-xs font-bold text-slate-500 italic max-w-[240px] text-center lg:text-right leading-relaxed bg-white/50 p-3 rounded-2xl border border-dashed border-slate-200 lg:bg-transparent lg:p-0 lg:border-0">
                                 "{request.review || request.feedback}"
                             </p>

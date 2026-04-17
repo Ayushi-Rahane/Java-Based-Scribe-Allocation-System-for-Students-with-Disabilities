@@ -243,7 +243,7 @@ export default function ProfilePage() {
                             background: avail ? "#ede9ff" : "#f9f9f9",
                             color: avail ? "#7c4dff" : "#ccc",
                           }}>
-                            {avail ? "✓" : "·"}
+                            {avail ? <Check size={12} strokeWidth={3} /> : "·"}
                           </span>
                         )}
                       </td>

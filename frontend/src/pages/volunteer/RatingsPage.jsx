@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Search, History as HistoryIcon, Loader2 } from "lucide-react";
+import { Search, History as HistoryIcon, Loader2, Star } from "lucide-react";
 import volunteerService from "../../services/volunteerService";
 import { Avatar, Stars, EmptyState } from "../../components/UI";
 
@@ -68,7 +68,7 @@ export default function RatingsPage() {
           <div style={{ flex: 1, minWidth: 200 }}>
             {dist.map(({ star, count, pct }) => (
               <div key={star} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}>
-                <span style={{ fontSize: 12, fontWeight: 700, color: "#f39c12", width: 20 }}>{star}★</span>
+                <span style={{ fontSize: 12, fontWeight: 700, color: "#f39c12", width: 20, display: "flex", alignItems: "center" }}>{star}<Star size={10} fill="currentColor" strokeWidth={2} style={{ marginLeft: 2 }} /></span>
                 <div style={{ flex: 1, height: 8, background: "#f5f0ff", borderRadius: 4, overflow: "hidden" }}>
                   <div style={{ height: "100%", width: `${pct}%`, background: "#f39c12", borderRadius: 4, transition: "width 0.5s" }} />
                 </div>

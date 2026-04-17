@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
-import { 
-    CheckCircle2, 
-    UserCheck, 
-    PlusCircle, 
+import {
+    CheckCircle2,
+    UserCheck,
+    PlusCircle,
     Clock,
     ArrowRight
 } from "lucide-react";
@@ -116,9 +116,7 @@ const RecentActivity = () => {
                 <h3 className="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
                     Recent Activity
                 </h3>
-                <button className="text-indigo-600 text-xs font-bold uppercase tracking-wider hover:text-indigo-700 transition-colors flex items-center gap-1">
-                    See logs <ArrowRight size={14} />
-                </button>
+
             </div>
 
             {loading ? (

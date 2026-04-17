@@ -8,15 +8,16 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import volunteerService from "../../services/volunteerService";
 import { Avatar, Stars, DisabilityBadge, MatchScore } from "../../components/UI";
+import volunteerBanner from "../../assets/volunteer-banner.webp";
 
 const C = {
-  primary:      "#4F46E5",
-  primaryBg:    "#EDE9FE",
+  primary: "#4F46E5",
+  primaryBg: "#EDE9FE",
   primaryLight: "#F5F3FF",
-  border:       "#DDD6FE",
-  textMain:     "#1E1B4B",
-  textMuted:    "#6D6A9C",
-  textFaint:    "#A5B4FC",
+  border: "#DDD6FE",
+  textMain: "#1E1B4B",
+  textMuted: "#6D6A9C",
+  textFaint: "#A5B4FC",
 };
 
 // ─── Top Bar ─────────────────────────────────────────────────────────────────
@@ -109,7 +110,7 @@ function WelcomeBanner({ user }) {
 
       {/* Banner image */}
       <img
-        src="/banner.png"
+        src={volunteerBanner}
         alt="volunteer"
         style={{
           position: "absolute",
@@ -185,7 +186,7 @@ function RequestCard({ req, navigate }) {
       <div style={{ display: "flex", gap: 14, marginBottom: 12 }}>
         {[
           { icon: Calendar, text: req.examDate },
-          { icon: Clock,    text: req.examTime },
+          { icon: Clock, text: req.examTime },
         ].map(({ icon: Icon, text }) => (
           <div key={text} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 11, color: C.textMuted, fontFamily: "'Poppins', sans-serif" }}>
             <Icon size={12} />{text}
@@ -243,10 +244,10 @@ export default function DashboardPage() {
 
       {/* Stats row */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 18, marginBottom: 28 }}>
-        <StatCard icon={InboxIcon}      label="Incoming Requests"  value={incomingRequests.length}        iconColor="#4F46E5" iconBg="#EDE9FE" delay={0.05} />
-        <StatCard icon={ClipboardCheck} label="Active Assignments" value={activeAssignments.length}       iconColor="#059669" iconBg="#D1FAE5" delay={0.10} />
-        <StatCard icon={TrendingUp}     label="Total Sessions"     value={totalSessions}                  iconColor="#0891B2" iconBg="#CFFAFE" delay={0.15} />
-        <StatCard icon={Award}          label="Avg Rating"         value={profileData?.rating?.toFixed(1) || "—"}  iconColor="#D97706" iconBg="#FEF3C7" delay={0.20} />
+        <StatCard icon={InboxIcon} label="Incoming Requests" value={incomingRequests.length} iconColor="#4F46E5" iconBg="#EDE9FE" delay={0.05} />
+        <StatCard icon={ClipboardCheck} label="Active Assignments" value={activeAssignments.length} iconColor="#059669" iconBg="#D1FAE5" delay={0.10} />
+        <StatCard icon={TrendingUp} label="Total Sessions" value={totalSessions} iconColor="#0891B2" iconBg="#CFFAFE" delay={0.15} />
+        <StatCard icon={Award} label="Avg Rating" value={profileData?.rating?.toFixed(1) || "—"} iconColor="#D97706" iconBg="#FEF3C7" delay={0.20} />
       </div>
 
       {/* Main 2-col grid */}

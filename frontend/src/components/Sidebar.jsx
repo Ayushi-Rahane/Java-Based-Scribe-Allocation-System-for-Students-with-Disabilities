@@ -91,34 +91,7 @@ export default function Sidebar() {
           );
         })}
 
-        <div style={{ margin: "10px 20px", height: 1, background: C.primaryLight }} />
 
-        {(() => {
-          const active = pathname === "/notifications";
-          return (
-            <button onClick={() => navigate("/notifications")}
-              style={{
-                display: "flex", alignItems: "center", gap: 11, padding: "11px 20px",
-                background: active ? C.primaryBg : "transparent",
-                borderRight: `3px solid ${active ? C.primary : "transparent"}`,
-                color: active ? C.primary : C.textMuted,
-                fontWeight: active ? 600 : 500, fontSize: 13,
-                cursor: "pointer", border: "none", width: "100%", textAlign: "left",
-                transition: "all 0.15s", fontFamily: "'Poppins', sans-serif",
-              }}
-              onMouseEnter={e => { if (!active) { e.currentTarget.style.background = C.primaryLight; e.currentTarget.style.color = C.primary; }}}
-              onMouseLeave={e => { if (!active) { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = C.textMuted; }}}
-            >
-              <Bell size={17} />
-              <span style={{ flex: 1 }}>Notifications</span>
-              {unreadCount > 0 && (
-                <span style={{ background: "#DC2626", color: "white", borderRadius: "50%", width: 18, height: 18, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, fontWeight: 700 }}>
-                  {unreadCount}
-                </span>
-              )}
-            </button>
-          );
-        })()}
       </nav>
 
       {/* User footer */}

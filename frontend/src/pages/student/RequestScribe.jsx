@@ -32,8 +32,7 @@ const RequestScribe = () => {
         duration: "",
         location: "",
         language: "",
-        requirements: "",
-        materials: null
+        requirements: ""
     });
 
     // Update form data
@@ -57,23 +56,10 @@ const RequestScribe = () => {
                 return;
             }
 
-            // Upload files first if present
-            let uploadedMaterials = [];
-            if (formData.materials && formData.materials.length > 0) {
-                try {
-                    uploadedMaterials = await requestService.uploadMaterials(formData.materials);
-                } catch (uploadErr) {
-                    setError("Failed to upload study materials. Please try a smaller file.");
-                    setLoading(false);
-                    return;
-                }
-            }
-
             // Submit to backend
             const payload = {
                 ...formData,
                 preferredLanguage: formData.language,
-                materials: uploadedMaterials,
                 duration: parseInt(formData.duration.split(" ")[0]),
                 studentId: user?._id || user?.id
             };

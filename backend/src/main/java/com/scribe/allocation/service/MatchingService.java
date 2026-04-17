@@ -102,7 +102,17 @@ public class MatchingService {
     // ── Scoring logic ────────────────────────────────────────────────────────
 
     private int calculateMatchScore(Volunteer volunteer, Request request) {
-        int score = 50; // base: already passed location hard filter
+        int score = 0; 
+
+        // Dynamically check location instead of assuming it passed the hard filter!
+        boolean cityMatch = volunteer.getCity() != null && request.getCity() != null 
+                            && volunteer.getCity().equalsIgnoreCase(request.getCity());
+        boolean stateMatch = volunteer.getState() != null && request.getState() != null 
+                            && volunteer.getState().equalsIgnoreCase(request.getState());
+                            
+        if (cityMatch && stateMatch) {
+             score += 50;
+        }
 
         // +30 subject match (fuzzy — partial match counts)
         if (isSubjectMatch(volunteer.getSubjects(), request.getSubject())) {
